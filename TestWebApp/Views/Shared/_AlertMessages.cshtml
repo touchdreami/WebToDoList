@@ -1,0 +1,26 @@
+﻿@{
+    var message = TempData["SuccessMessage"] as string ??
+                  TempData["ErrorMessage"] as string;
+    var alertType = TempData["SuccessMessage"] != null ? "success" : 
+        TempData["ErrorMessage"] != null ? "danger" : string.Empty;
+}
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <div id="autoHideAlert" class="alert alert-@alertType alert-dismissible fade show text-center shadow" role="alert" 
+         style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 1000; min-width: 300px;">
+        @message
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    
+    <script>
+        setTimeout(function() {
+            let alert = document.getElementById('autoHideAlert');
+            if (alert) {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            }
+        }, 3000);
+    </script>
+}

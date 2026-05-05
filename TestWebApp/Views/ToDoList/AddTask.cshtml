@@ -1,0 +1,36 @@
+﻿@model TestWebApp.Models.ToDoTask
+@{
+    ViewData["Title"] = "Добавить";
+}
+
+<div class="container">
+    <div class="col-md-7 mx-auto">
+        <h2 class="text-center">Задача</h2>
+
+        <form method="post" asp-action="AddTask" asp-controller="ToDoList">
+            <div class="form-group">
+                <label for="Title">Заголовок</label>
+                <input type="text" class="form-control" id="Title" name="Title" asp-for="Title" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="Description">Описание</label>
+                <textarea type="text" class="form-control" id="Description" name="Description" asp-for="Description" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="StartDate">Начало выполнения</label>
+                <input type="datetime-local" class="form-control" id="StartDate" name="StartDate" asp-for="StartDate"
+                       value="@ViewBag.StartDateValue" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="EndDate">Срок выполнения</label>
+                <input type="datetime-local" class="form-control" id="EndDate" name="EndDate" asp-for="EndDate" value="@ViewBag.EndDateValue" required>
+            </div>  
+
+            <button type="submit" class="btn btn-primary d-block mx-auto mt-3">Добавить</button>
+            
+        </form>
+    </div>
+</div>
