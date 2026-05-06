@@ -1,0 +1,50 @@
+name: Deploy to Ubuntu Server
+
+on:
+  push:
+    branches: [ master ]  # или main, если у вас так
+  workflow_dispatch:      # позволяет запускать вручную из GitHub
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. Клонируем код
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      # 2. Устанавливаем .NET 8 SDK
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      
+      # 3. Восстанавливаем зависимости и публикуем
+      - name: Publish application
+        run: |
+          dotnet restore
+          dotnet publish -c Release -r linux-x64 -o ./publish
+      
+      # 4. Копируем файлы на сервер через SCP
+      - name: Deploy to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "publish/*"
+          target: ${{ secrets.DEPLOY_PATH }}
+          strip_components: 1
+          overwrite: true
+      
+      # 5. Перезапускаем сервис
+      - name: Restart service
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            sudo systemctl restart myapp
+            sudo systemctl status myapp --no-pager
