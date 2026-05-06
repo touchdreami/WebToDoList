@@ -46,5 +46,5 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo systemctl restart myapp
-            sudo systemctl status myapp --no-pager
+            sudo systemctl restart kestrel-myapp.service
+            sudo systemctl status kestrel-myapp.service --no-pager
